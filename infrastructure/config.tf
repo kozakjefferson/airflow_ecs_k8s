@@ -8,7 +8,7 @@ variable "availability_zones" {
 }
 
 variable "project_name" {
-   default = "airflow"
+   default = "etl_airflow"
 }
 
 variable "stage" {

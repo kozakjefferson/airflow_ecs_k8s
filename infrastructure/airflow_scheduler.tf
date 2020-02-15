@@ -21,13 +21,13 @@ resource "aws_ecs_task_definition" "scheduler" {
   network_mode = "awsvpc"
   execution_role_arn = "${aws_iam_role.ecs_task_iam_role.arn}"
   requires_compatibilities = ["FARGATE"]
-  cpu = "1024" # the valid CPU amount for 2 GB is from from 256 to 1024
-  memory = "2048"
+  cpu = "2048" # the valid CPU amount for 2 GB is from from 256 to 1024
+  memory = "4096"
   container_definitions = <<EOF
 [
   {
     "name": "airflow_scheduler",
-    "image": ${replace(jsonencode("${aws_ecr_repository.docker_repository.repository_url}:${var.image_version}"), "/\"([0-9]+\\.?[0-9]*)\"/", "$1")} ,
+    "image": ${aws_ecr_repository.docker_repository.repository_url}:${var.image_version},
     "essential": true,
     "command": [
         "scheduler"
@@ -35,7 +35,7 @@ resource "aws_ecs_task_definition" "scheduler" {
     "environment": [
       {
         "name": "REDIS_HOST",
-        "value": ${replace(jsonencode("${aws_elasticache_cluster.celery_backend.cache_nodes.0.address}"), "/\"([0-9]+\\.?[0-9]*)\"/", "$1")}
+        "value": ${aws_elasticache_cluster.celery_backend.cache_nodes.0.address}
       },
       {
         "name": "REDIS_PORT",
@@ -43,7 +43,7 @@ resource "aws_ecs_task_definition" "scheduler" {
       },
       {
         "name": "POSTGRES_HOST",
-        "value": ${replace(jsonencode("${aws_db_instance.metadata_db.address}"), "/\"([0-9]+\\.?[0-9]*)\"/", "$1")}
+        "value": ${aws_db_instance.metadata_db.address}
       },
       {
         "name": "POSTGRES_PORT",
@@ -55,7 +55,7 @@ resource "aws_ecs_task_definition" "scheduler" {
       },
       {
           "name": "POSTGRES_PASSWORD",
-          "value": ${replace(jsonencode("${random_string.metadata_db_password.result}"), "/\"([0-9]+\\.?[0-9]*)\"/", "$1")}
+          "value": ${random_string.metadata_db_password.result}
       },
       {
           "name": "POSTGRES_DB",
@@ -63,7 +63,7 @@ resource "aws_ecs_task_definition" "scheduler" {
       },
       {
         "name": "FERNET_KEY",
-        "value": "k8IfvPBpKOoDZSBbqHOQCgJkhXU_Y2wjwLZbJmavcXQ="
+        "value": "dJVGvyvi36_C2Gx2rnyWDglYvdPmkoeUDl1GlcSvunE="
       },
       {
         "name": "AIRFLOW_BASE_URL",

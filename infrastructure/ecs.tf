@@ -10,11 +10,11 @@ resource "aws_ecr_lifecycle_policy" "docker_repository_lifecycly" {
     "rules": [
         {
             "rulePriority": 1,
-            "description": "Keep only the latest 5 images",
+            "description": "Keep only the latest 10 images",
             "selection": {
                 "tagStatus": "any",
                 "countType": "imageCountMoreThan",
-                "countNumber": 5
+                "countNumber": 10
             },
             "action": {
                 "type": "expire"
@@ -80,6 +80,15 @@ resource "aws_iam_policy" "ecs_task_policy" {
       ],
       "Effect": "Allow",
       "Resource": "*"
+    },
+    {
+      "Action":[
+        "cloudwatch:GetMetricData"
+        "cloudwatch:PutMetricData"
+        "cloudwatch:PostMetricData"
+      ],
+      "Effect": "Allow",
+        "Resource": "*"
     }
   ]
 }

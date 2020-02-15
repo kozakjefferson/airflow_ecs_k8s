@@ -34,7 +34,7 @@ resource "aws_ecs_task_definition" "flower" {
 [
   {
     "name": "airflow_flower",
-    "image": ${replace(jsonencode("${aws_ecr_repository.docker_repository.repository_url}:${var.image_version}"), "/\"([0-9]+\\.?[0-9]*)\"/", "$1")} ,
+    "image": ${aws_ecr_repository.docker_repository.repository_url}:${var.image_version} ,
     "essential": true,
     "portMappings": [
       {
@@ -48,7 +48,7 @@ resource "aws_ecs_task_definition" "flower" {
     "environment": [
       {
         "name": "REDIS_HOST",
-        "value": ${replace(jsonencode("${aws_elasticache_cluster.celery_backend.cache_nodes.0.address}"), "/\"([0-9]+\\.?[0-9]*)\"/", "$1")}
+        "value": ${aws_elasticache_cluster.celery_backend.cache_nodes.0.address}
       },
       {
         "name": "REDIS_PORT",
@@ -56,7 +56,7 @@ resource "aws_ecs_task_definition" "flower" {
       },
       {
         "name": "POSTGRES_HOST",
-        "value": ${replace(jsonencode("${aws_db_instance.metadata_db.address}"), "/\"([0-9]+\\.?[0-9]*)\"/", "$1")}
+        "value": ${aws_db_instance.metadata_db.address}
       },
       {
         "name": "POSTGRES_PORT",
@@ -68,7 +68,7 @@ resource "aws_ecs_task_definition" "flower" {
       },
       {
           "name": "POSTGRES_PASSWORD",
-          "value": ${replace(jsonencode("${random_string.metadata_db_password.result}"), "/\"([0-9]+\\.?[0-9]*)\"/", "$1")}
+          "value": ${random_string.metadata_db_password.result}
       },
       {
           "name": "POSTGRES_DB",
@@ -76,7 +76,7 @@ resource "aws_ecs_task_definition" "flower" {
       },
       {
         "name": "FERNET_KEY",
-        "value": "k8IfvPBpKOoDZSBbqHOQCgJkhXU_Y2wjwLZbJmavcXQ="
+        "value": "dJVGvyvi36_C2Gx2rnyWDglYvdPmkoeUDl1GlcSvunE="
       },
       {
         "name": "AIRFLOW_BASE_URL",

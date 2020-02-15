@@ -47,11 +47,11 @@ resource "aws_db_subnet_group" "airflow_subnet_group" {
 
 resource "aws_db_instance" "metadata_db" {
     identifier = "${var.project_name}-${var.stage}-postgres"
-    
-    # database name 
+
+    # database name
     name = "${var.project_name}"
     instance_class = "${var.metadata_db_instance_type}"
-    allocated_storage = 20
+    allocated_storage = 40
     engine = "postgres"
     engine_version = "10.6"
     skip_final_snapshot = true
